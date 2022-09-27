@@ -1,69 +1,68 @@
+import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
-import axios from "axios";
-import Search from "./components/Search";
-import Results from "./components/Results";
-import Detail from "./components/Detail";
-import "./App.css";
+import { DeckView } from "./components/DeckView";
+
+export interface Deck {
+	name: string,
+	heroes: { id: number }[]
+};
 
 function App() {
-    const [state, setState] = useState({
-        s: "sherlock",
-        results: [],
-        selected: { Title: String },
-    });
-    const apiurl = "https://www.omdbapi.com/?apikey=a2526df0";
-    const searchInput = (e: any) => {
-        let s = e.target.value;
+	const [deck, setDeck] = useState<Deck>();
+	const [fetchError, setFetchError] = useState(false);
+	const [textInputValue, setTextInputValue] = useState("");
 
-        setState((prevState) => {
-            return { ...prevState, s: s };
-        });
-    };
+	const geDeckRequest = (id: number) => {
+		const url = "https://ringsdb.com/api/public/decklist/" + id;
+		
+		return new Promise((resolve) => {
+			fetch(url)
+				.then((response) => response.json())
+				.then((data) => {
+					resolve(data);
+				})
+				.catch((error) => {
+					resolve(error);
+				});
+		});
+	};
 
-    const search = (e: any) => {
-        if (e.key === "Enter") {
-            axios(apiurl + "&s=" + state.s).then(({ data }) => {
-                let results = data.Search;
-                console.log(results);
-                setState((prevState) => {
-                    return { ...prevState, results: results };
-                });
-            });
-        }
-    };
+	const getDeck = async () => {
+		const getDeck = (await geDeckRequest(parseInt(textInputValue))) as Deck;
 
-    const openDetail = (id: any) => {
-        axios(apiurl + "&i=" + id).then(({ data }) => {
-            let result = data;
+		if (!getDeck) {
+			setFetchError(true);
+			return;
+		} else {
+			setFetchError(false);
+		}
 
-            setState((prevState) => {
-                return { ...prevState, selected: result };
-            });
-        });
-    };
+		setDeck({
+			name: getDeck.name,
+			heroes: getDeck.heroes,
+		});
+	};
 
-    const closeDetail = () => {
-        setState((prevState: any) => {
-            return { ...prevState, selected: {} };
-        });
-    };
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Movie Mania</h1>
-            </header>
-            <main>
-                <Search searchInput={searchInput} search={search} />
-                <Results results={state.results} openDetail={openDetail} />
-                {typeof state.selected.Title !== "undefined" ? (
-                    <Detail selected={state.selected} closeDetail={closeDetail} />
-                        ) : (
-                    false
-                )}
-            </main>
-        </div>
-    );
+	return (
+		<div>
+			<Box sx={{ margin: '40px' }}>
+				<h1>My heros</h1>
+				<Box>
+					<Box
+						component="form"
+						noValidate
+						autoComplete="off"
+						sx={{ display: 'flex', columnGap: '8px', alignItems: 'center' }}
+					>
+						<TextField id="deck-id" label="Enter deck id" variant="outlined" onChange={(e) => setTextInputValue(e.target.value)} required/>
+						<Button onClick={getDeck} variant="contained"> Get deck </Button>
+					</Box>
+					<p>{fetchError ? "Couldn't find a deck with given search input!" : ""}</p>
+					{deck && <DeckView deck={deck} />}
+				</Box>
+			</Box>
+		</div>
+	);
 }
 
 export default App;
