@@ -22,7 +22,7 @@ function App() {
 						return;
 					}
 
-					response.json()
+					return response.json()
 				})
 				.then((data) => {
 					resolve(data);
