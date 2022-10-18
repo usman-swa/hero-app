@@ -61,10 +61,9 @@ const getCard = async (key: string) => {
 
 export const DeckView = ({ deck }: DeckProps) => {
 	const [currentCardInfo, setCurrentCardInfo] = useState({} as Card);
-	const [deckTitle, setDeckTitle] = useState("");
+	const [deckTitle, setDeckTitle] = useState('');
 	const [heroCards, setHeroCards] = useState<(Card | undefined)[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [heroKeys, setHeroKeys] = useState<string[]>([]);
 	const [open, setOpen] = React.useState(false);
   	const handleClose = () => setOpen(false);
 
@@ -80,22 +79,12 @@ export const DeckView = ({ deck }: DeckProps) => {
 		};
 		getHeroCards(deck.heroes);
 		setDeckTitle(deck.name);
-		setHeroKeys(Object.keys(deck.heroes));
 	}, [deck]);
 
-	const showCardInfo = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
-		const target = e.target as HTMLImageElement;
-
-		for (const hero of heroCards) {
-			let card = hero;
-			let newCardInfo;
-
-			if (!card) continue;
-			if (card.code === target.id && card) {
-				newCardInfo = card;
-				setCurrentCardInfo(newCardInfo);
-				setOpen(true);
-			}
+	const showCardInfo = (selectedCard: Card | undefined) => {
+		if (selectedCard) {
+			setCurrentCardInfo(selectedCard);
+			setOpen(true);
 		}
 	};
 	const imageLoaded = () => {
@@ -106,15 +95,15 @@ export const DeckView = ({ deck }: DeckProps) => {
 		<div>
 			{isLoading ? <CircularProgress /> : deckTitle}
 			<Box sx={{ display: 'flex' }}>
-				{heroCards.map((_, i) => {
+				{heroCards.map((card, _) => {
 					return (
-						<div key={i}>
+						<div key={card?.name}>
 							<img
-								id={heroKeys[i]}
-								src={"https://ringsdb.com" + heroCards[i]!.imagesrc}
+								id={card?.name}
+								src={"https://ringsdb.com" + card?.imagesrc}
 								alt=""
-								onClick={(e) => {
-									showCardInfo(e);
+								onClick={() => {
+									showCardInfo(card);
 								}}
 								onLoad={imageLoaded}
 							/>
