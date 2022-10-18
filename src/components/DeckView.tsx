@@ -42,9 +42,6 @@ const getCardRequest = (id: string) => {
             .then(response => response.json())
             .then(data => {
                 resolve(data);
-            })
-            .catch((error) => {
-                resolve(error);
             });
     });
 }
@@ -53,10 +50,10 @@ const getCard = async (key: string) => {
     let fetchData = (await getCardRequest(key)) as Card;
 
     if (!fetchData) {
-        return undefined;
-    } else {
-        return fetchData;
+        return;
     }
+
+	return fetchData;
 };
 
 export const DeckView = ({ deck }: DeckProps) => {

@@ -10,9 +10,9 @@ export interface Deck {
 function App() {
 	const [deck, setDeck] = useState<Deck>();
 	const [fetchError, setFetchError] = useState(false);
-	const [textInputValue, setTextInputValue] = useState("");
+	const [textInputValue, setTextInputValue] = useState('');
 
-	const geDeckRequest = (id: number) => {
+	const geDeckRequest = (id: string) => {
 		const url = "https://ringsdb.com/api/public/decklist/" + id;
 		
 		return new Promise((resolve) => {
@@ -28,7 +28,7 @@ function App() {
 	};
 
 	const getDeck = async () => {
-		const getDeck = (await geDeckRequest(parseInt(textInputValue))) as Deck;
+		const getDeck = (await geDeckRequest(textInputValue)) as Deck;
 
 		if (!getDeck) {
 			setFetchError(true);
