@@ -17,24 +17,26 @@ function App() {
 		
 		return new Promise((resolve) => {
 			fetch(url)
-				.then((response) => response.json())
+				.then((response) => {
+					if (!response.ok) {
+						return;
+					}
+
+					response.json()
+				})
 				.then((data) => {
 					resolve(data);
 				})
-				.catch((error) => {
-					resolve(error);
+				.catch(() => {
+					setFetchError(true);
 				});
 		});
 	};
 
 	const getDeck = async () => {
 		const getDeck = (await geDeckRequest(textInputValue)) as Deck;
-
 		if (!getDeck) {
-			setFetchError(true);
 			return;
-		} else {
-			setFetchError(false);
 		}
 
 		setDeck({
