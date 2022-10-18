@@ -107,35 +107,35 @@ export const DeckView = ({ deck }: DeckProps) => {
 								}}
 								onLoad={imageLoaded}
 							/>
-							<Modal
-								open={open}
-								onClose={handleClose}
-								aria-labelledby="modal-modal-title"
-								aria-describedby="modal-modal-description"
-							>
-								<Box sx={modalStyle}>
-									<Box sx={{ display: 'flex', columnGap: '24px' }}>
-										<div>
-											<h2>{currentCardInfo.name}</h2>
-											<img src={"https://ringsdb.com" + currentCardInfo.imagesrc} alt="card" />
-										</div>
-										<div style={{ marginTop: '60px' }}>
-											<b>{currentCardInfo.name}</b> <br />
-											<br />
-											Threat: {currentCardInfo.threat} <br />
-											Willpower: {currentCardInfo.willpower} <br />
-											Health: {currentCardInfo.health} <br />
-											<br />
-											Pack: {currentCardInfo.pack_name} <br />
-
-											<p dangerouslySetInnerHTML={{ __html: currentCardInfo.flavor }} />
-										</div>
-									</Box>
-								</Box>
-							</Modal>
 						</div>
 					);
 				})}
+				<Modal
+					open={open}
+					onClose={handleClose}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
+				>
+					<Box sx={modalStyle}>
+						<Box sx={{ display: 'flex', columnGap: '24px' }}>
+							<div>
+								<h2>{currentCardInfo.name}</h2>
+								<img src={"https://ringsdb.com" + currentCardInfo.imagesrc} alt="card" />
+							</div>
+							<div style={{ marginTop: '60px' }}>
+								<b>{currentCardInfo.name}</b> <br />
+								<br />
+								Threat: {currentCardInfo.threat} <br />
+								Willpower: {currentCardInfo.willpower} <br />
+								Health: {currentCardInfo.health} <br />
+								<br />
+								Pack: {currentCardInfo.pack_name} <br />
+
+								<p dangerouslySetInnerHTML={{ __html: currentCardInfo.flavor }} />
+							</div>
+						</Box>
+					</Box>
+				</Modal>
 			</Box>
 		</div>
 	);
